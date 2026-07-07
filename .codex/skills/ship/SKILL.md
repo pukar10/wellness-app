@@ -20,12 +20,16 @@ Follow the repository standards in `AGENTS.md`. Preserve user work, avoid direct
    * Confirm the current branch with `git branch --show-current`.
    * Identify the default upstream remote, preferring `origin`.
 
-2. Protect user changes:
+2. Classify local changes:
 
    * Do not discard, reset, checkout over, overwrite, or rewrite user changes unless explicitly requested.
-   * If unrelated local changes are present, leave them untouched.
-   * Commit only the files intended for the requested change.
-   * If the requested scope is unclear, inspect diffs and make a conservative commit that matches the completed work.
+   * Inspect every modified, staged, and untracked path before shipping. Use `git diff`, `git diff --cached`, and targeted file reads for untracked files.
+   * Do not leave untracked files behind silently. Decide whether each untracked path is part of the current shipment, belongs in a separate logical commit on the same branch, should move to a more appropriate branch, or is unsafe to classify without user input.
+   * Categorize unrelated work by the actual change type using the repository’s Conventional Commit rules. Examples: new docs or Codex instructions use `docs(...)` or `chore(...)`; build tooling uses `build(...)`; tests use `test(...)`; app behavior uses `feat(...)` or `fix(...)`.
+   * If unrelated local changes are coherent and reviewable with the current branch, include them as a separate commit and mention that scope in the PR body.
+   * If unrelated local changes clearly do not belong with the current branch or PR, create or switch to an appropriate branch before committing them, then ship that branch or ask the user which branch to prioritize when multiple shipments would be created.
+   * Stop and ask the user only when a path appears secret, destructive, generated, too ambiguous to classify, or would require rewriting/discarding work.
+   * Commit only files that have been inspected and intentionally classified.
 
 3. Ensure there is a working branch:
 
@@ -72,6 +76,7 @@ Follow the repository standards in `AGENTS.md`. Preserve user work, avoid direct
    * Use a PR title in Conventional Commit style, usually matching the main commit title.
    * Write a concise PR body with a summary and validation results.
    * Prefer draft PRs when the user asks for a draft, validation is incomplete, or the branch is not ready for final review.
+   * If this workflow created a new local branch, switch back to `main` after the PR is created and delete that local branch.
 
 ## Command Preferences
 
