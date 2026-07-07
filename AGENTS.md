@@ -21,6 +21,13 @@ This is a Next.js App Router project using TypeScript, React, and Tailwind CSS.
 * Follow existing TypeScript, Tailwind CSS, formatting, and project conventions.
 * Consult `node_modules/next/dist/docs/` for version-specific Next.js behavior when needed.
 
+## Repository Safety
+
+* Do not discard, reset, overwrite, or rewrite user changes unless explicitly requested.
+* If unrelated local changes are present, leave them untouched.
+* Keep changes focused and limited to the task.
+* Do not commit secrets, generated output, or unrelated changes.
+
 ## Validation
 
 Before completing a change, run:
@@ -30,21 +37,18 @@ npm run lint
 npm run build
 ```
 
-Do not consider the change complete until both commands pass, unless the failure is unrelated to the current change and is clearly documented.
+Do not consider the change complete until both commands pass, unless a failure is unrelated to the current change and is clearly documented.
 
-## Git Workflow
+## Git Policy
 
 * Never commit or push directly to `main`.
-* Create a dedicated branch for every change.
-* Keep changes focused and limited to the task at hand.
-* Do not commit secrets, generated output, or unrelated changes.
-* Push the branch and open a pull request for review.
-* Merge into `main` only through an approved pull request.
-* Repository branch protection should block direct pushes to `main`.
+* Create a dedicated branch for each change when starting from `main`.
+* Use pull requests for review before merging into `main`.
+* Branch protection should block direct pushes to `main`.
 
-## Commit Convention
+## Commits
 
-Use Conventional Commits for every commit:
+Use Conventional Commits:
 
 ```text
 <type>[optional scope][!]: <description>
@@ -59,17 +63,17 @@ docs(readme): update setup instructions
 refactor(api)!: change appointment response format
 ```
 
-Allowed commit types:
+Allowed types:
 
 ```text
-feat      Add a new feature
+feat      Add a feature
 fix       Fix a bug
 docs      Documentation-only changes
 style     Formatting changes that do not affect behavior
 refactor  Restructure code without changing behavior
 perf      Improve performance
 test      Add or update tests
-build     Change the build system or dependencies
+build     Change build system or dependencies
 ci        Change CI configuration or scripts
 chore     Maintenance not covered by another type
 revert    Revert a previous commit
@@ -82,7 +86,7 @@ feat(auth): add password reset flow
 fix(payments): handle failed webhook retries
 ```
 
-Mark breaking changes with `!` and explain them in a `BREAKING CHANGE:` footer when needed:
+Mark breaking changes with `!` and include a `BREAKING CHANGE:` footer when needed:
 
 ```text
 refactor(api)!: change appointment response format
@@ -90,19 +94,15 @@ refactor(api)!: change appointment response format
 BREAKING CHANGE: appointment responses now return `startsAt` instead of `start_time`.
 ```
 
-When changes contain logically independent work, split them into separate commits before pushing. Each commit should be coherent, reviewable, and valid on its own.
+Split logically independent changes into separate commits when practical. Each commit should be coherent, reviewable, and valid on its own.
 
-## Pull Request Convention
+## Pull Requests
 
-Every change should be reviewed through a pull request.
-
-PR titles should follow the same style as Conventional Commits:
+PR titles should follow Conventional Commit style:
 
 ```text
-<type>(<scope>): <short summary>
+<type>[optional scope]: <short summary>
 ```
-
-The `scope` is optional but recommended when the change affects a specific area of the codebase.
 
 Examples:
 
@@ -110,32 +110,8 @@ Examples:
 feat(auth): add password reset flow
 fix(payments): handle failed webhook retries
 docs(api): update endpoint examples
-refactor(users): simplify profile service
 test(checkout): add integration coverage
 chore(deps): update package dependencies
 ```
 
-PR title guidelines:
-
-* Use lowercase for the type and scope.
-* Write the summary in imperative mood, such as `add`, `fix`, `update`, `remove`, or `simplify`.
-* Keep the title concise, specific, and focused on the change.
-* Prefer a scope when the affected area is clear.
-* Do not end the title with a period.
-* Do not include the PR author’s name in the title.
-* Avoid vague titles such as `updates`, `bug fixes`, `misc changes`, or `work in progress`.
-
-Good:
-
-```text
-fix(auth): prevent expired sessions from redirecting incorrectly
-```
-
-Bad:
-
-```text
-Fixed some auth stuff.
-john - fix(auth): prevent expired sessions from redirecting incorrectly
-```
-
-Use assignees, reviewers, or the PR description to clarify ownership when needed.
+PR titles should be concise, specific, and focused. Use lowercase for the type and scope, prefer imperative mood, and avoid vague titles such as `updates`, `bug fixes`, `misc changes`, or `work in progress`.
