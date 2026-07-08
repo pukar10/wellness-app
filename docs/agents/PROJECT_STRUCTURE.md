@@ -58,5 +58,7 @@ WELLNESS-APP/
 
 ## Rule of thumb
 
-If code belongs only to the Next.js app, keep it in `apps/web/src/`.
-If code is shared by multiple apps or services, move it to `packages/*`.
+- If code belongs only to the Next.js app, keep it under `apps/web/src/`.
+- If code is shared across multiple apps or services, move it to `packages/*`.
+- Do not place source modules (lib, styles, types, etc.) directly under the `apps/` root
+  (e.g. `apps/lib/`, `apps/styles/`). These belong in one of the two locations above.
