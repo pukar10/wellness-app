@@ -31,7 +31,7 @@ docker/
 Use Compose service names inside containers:
 
 ```env
-DATABASE_URL="postgresql://postgres:postgres@postgres:5432/wellness_app"
+DATABASE_URL="postgresql://wellness:wellness@postgres:5432/wellness?schema=public"
 REDIS_URL="redis://redis:6379"
 ```
 
