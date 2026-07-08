@@ -193,3 +193,7 @@ jobs:
       severity: CRITICAL,HIGH
       ignore-unfixed: true
       fail-on-findings: false
+
+  release-please:
+    name: Release Please
+    uses: pukar10/shared-workflows/.github/workflows/release-please.yaml@main
