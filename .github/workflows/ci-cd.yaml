@@ -1,0 +1,184 @@
+name: CI/CD
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ci-cd-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    name: Detect changed files
+    runs-on: ubuntu-latest
+
+    outputs:
+      app-checks: ${{ steps.filter.outputs.web == 'true' || steps.filter.outputs.db == 'true' || steps.filter.outputs.config == 'true' || steps.filter.outputs.ci == 'true' }}
+      db-checks: ${{ steps.filter.outputs.db == 'true' || steps.filter.outputs.config == 'true' || steps.filter.outputs.ci == 'true' }}
+      docker-checks: ${{ steps.filter.outputs.docker == 'true' || steps.filter.outputs.ci == 'true' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect changed files
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            web:
+              - 'apps/web/**'
+
+            db:
+              - 'packages/db/**'
+              - 'prisma.config.ts'
+
+            docker:
+              - 'docker/**'
+              - 'Dockerfile'
+              - 'Dockerfile.dev'
+              - 'docker-compose.yaml'
+              - 'docker-compose.yml'
+              - 'docker-compose.dev.yaml'
+              - 'docker-compose.dev.yml'
+              - '.dockerignore'
+
+            config:
+              - 'package.json'
+              - 'package-lock.json'
+              - 'tsconfig.json'
+              - 'eslint.config.mjs'
+              - '.npmrc'
+
+            ci:
+              - '.github/**'
+
+  app-checks:
+    name: App checks
+    runs-on: ubuntu-latest
+    needs: changes
+    if: github.event_name == 'workflow_dispatch' || needs.changes.outputs.app-checks == 'true'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+  db-checks:
+    name: Database checks
+    runs-on: ubuntu-latest
+    needs: changes
+    if: github.event_name == 'workflow_dispatch' || needs.changes.outputs.db-checks == 'true'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate Prisma schema
+        run: npx prisma validate
+
+      - name: Generate Prisma client
+        run: npm run db:generate
+
+      - name: Typecheck DB package
+        run: npm run typecheck -w @wellness/db
+
+  docker-checks:
+    name: Docker checks
+    runs-on: ubuntu-latest
+    needs: changes
+    if: github.event_name == 'workflow_dispatch' || needs.changes.outputs.docker-checks == 'true'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate Compose file
+        run: docker compose -f docker-compose.yaml config
+
+  ci-result:
+    name: CI result
+    runs-on: ubuntu-latest
+    needs:
+      - changes
+      - app-checks
+      - db-checks
+      - docker-checks
+    if: always()
+
+    steps:
+      - name: Check CI result
+        run: |
+          if [[ "${{ needs.changes.result }}" == "failure" || \
+                "${{ needs.app-checks.result }}" == "failure" || \
+                "${{ needs.db-checks.result }}" == "failure" || \
+                "${{ needs.docker-checks.result }}" == "failure" ]]; then
+            echo "One or more CI jobs failed."
+            exit 1
+          fi
+
+          if [[ "${{ needs.changes.result }}" == "cancelled" || \
+                "${{ needs.app-checks.result }}" == "cancelled" || \
+                "${{ needs.db-checks.result }}" == "cancelled" || \
+                "${{ needs.docker-checks.result }}" == "cancelled" ]]; then
+            echo "One or more CI jobs were cancelled."
+            exit 1
+          fi
+
+          echo "CI passed."
+
+jobs:
+  web:
+    name: Web CI
+    uses: pukar10/shared-workflows/.github/workflows/nextjs-ci.yaml@main
+    with:
+      node-version: "24"
+      working-directory: "."
+      run-tests: false
+      fail-on-error: true
+
+  semgrep:
+    uses: pukar10/shared-workflows/.github/workflows/semgrep.yaml@main
+
+  conventional-commits:
+    if: github.event_name == 'pull_request'
+    uses: pukar10/shared-workflows/.github/workflows/conventional-commits.yaml@main
+
+  labeler:
+    if: github.event_name == 'pull_request'
+    uses: pukar10/shared-workflows/.github/workflows/labeler.yaml@main
+
+  build-publish-nextjs:
+    name: Build and publish wellness-app image
+    uses: pukar10/shared-workflows/.github/workflows/build-publish-nextjs.yml@main
+    with:
+      image_name: wellness-app
+      context: .
+      dockerfile: ./docker/Dockerfile

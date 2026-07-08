@@ -1,0 +1,67 @@
+web:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "apps/web/**"
+          - "docker/web/**"
+
+api:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/app/api/**"
+          - "src/server/**"
+
+database:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "packages/db/**"
+          - "docker/postgres/**"
+
+redis:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "docker/redis/**"
+
+ui:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "packages/ui/**"
+          - "src/styles/**"
+
+config:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "packages/config/**"
+          - "eslint.config.mjs"
+          - "next.config.js"
+          - "tsconfig.json"
+          - "package.json"
+
+docker:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "docker/**"
+          - "Dockerfile"
+          - "Dockerfile.dev"
+          - "docker-compose.yml"
+          - "docker-compose.dev.yaml"
+          - ".dockerignore"
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/**"
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.md"
+          - "docs/**"
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "package.json"
+          - "package-lock.json"
+          - "pnpm-lock.yaml"
+          - "yarn.lock"
+          - "npm-shrinkwrap.json"
