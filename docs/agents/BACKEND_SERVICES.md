@@ -14,8 +14,8 @@ Expected services:
 Keep Compose files at the repo root:
 
 ```text
-docker-compose.yml
-docker-compose.dev.yml
+docker-compose.yaml
+docker-compose.dev.yaml
 ```
 
 Keep service-specific config under `docker/`:

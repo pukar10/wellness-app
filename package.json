@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "packages/*"
   ],
   "scripts": {
     "dev": "npm run dev -w web",
@@ -12,6 +13,15 @@
     "lint": "npm run lint -w web",
     "typecheck": "npm run typecheck -w web",
 
-    "test": "npm run test --workspaces --if-present"
+    "test": "npm run test --workspaces --if-present",
+
+    "db:generate": "npm run db:generate -w @wellness/db",
+    "db:migrate": "npm run db:migrate -w @wellness/db",
+    "db:studio": "npm run db:studio -w @wellness/db",
+
+    "docker:dev": "docker compose -f docker-compose-dev.yaml up --build",
+    "docker:up": "docker compose -f docker-compose.yaml up --build",
+    "docker:down": "docker compose -f docker-compose.yaml down",
+    "docker:logs": "docker compose -f docker-compose.yaml logs -f"
   }
 }
