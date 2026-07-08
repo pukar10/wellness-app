@@ -116,3 +116,23 @@ chore(deps): update package dependencies
 ```
 
 PR titles should be concise, specific, and focused. Use lowercase for the type and scope, prefer imperative mood, and avoid vague titles such as `updates`, `bug fixes`, `misc changes`, or `work in progress`.
+
+## Prisma / Database Notes
+
+* This project uses Prisma 7.
+* Do not add `url = env("DATABASE_URL")` inside `schema.prisma`.
+* The database URL is configured in the root `prisma.config.ts`.
+* The Prisma schema is located at `packages/db/prisma/schema.prisma`.
+* Run Prisma commands from the project root.
+* Local Postgres runs through Docker Compose/Podman Compose.
+* Host connection uses port `5433`, while the container uses port `5432`.
+
+Common commands:
+
+```bash
+docker compose up -d postgres
+npx prisma validate
+npx prisma format
+npx prisma generate
+npx prisma migrate dev
+```
