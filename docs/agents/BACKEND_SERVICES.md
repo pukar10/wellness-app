@@ -4,7 +4,6 @@ This project uses Docker Compose for local backend services.
 
 Expected services:
 
-- `web`: Next.js app
 - `postgres`: primary relational database
 - `redis`: cache, sessions, rate limits, queues, or background job coordination
 - auth provider or auth service, depending on implementation
@@ -15,7 +14,6 @@ Keep Compose files at the repo root:
 
 ```text
 docker-compose.yaml
-docker-compose.dev.yaml
 ```
 
 Keep service-specific config under `docker/`:
@@ -38,7 +36,7 @@ REDIS_URL="redis://redis:6379"
 Use localhost only from the host machine:
 
 ```text
-localhost:5432
+localhost:5433
 localhost:6379
 ```
 

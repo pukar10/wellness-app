@@ -43,8 +43,6 @@ jobs:
               - 'Dockerfile.dev'
               - 'docker-compose.yaml'
               - 'docker-compose.yml'
-              - 'docker-compose.dev.yaml'
-              - 'docker-compose.dev.yml'
               - '.dockerignore'
 
             config:

@@ -43,7 +43,7 @@ docker:
           - "Dockerfile"
           - "Dockerfile.dev"
           - "docker-compose.yml"
-          - "docker-compose.dev.yaml"
+          - "docker-compose.yaml"
           - ".dockerignore"
 
 ci:

@@ -34,7 +34,6 @@ WELLNESS-APP/
 │  └─ redis/
 │
 ├─ docker-compose.yaml
-├─ docker-compose-dev.yaml
 ├─ .env.example
 ├─ package.json
 ├─ package-lock.json
