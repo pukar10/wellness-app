@@ -2,81 +2,50 @@
 
 ## Project
 
-This is a wellness-focused npm workspaces monorepo using Next.js App Router, Docker Compose, Postgres, Redis, and authentication.
+This is an npm workspaces monorepo. The Next.js App Router project lives in `apps/web/`.
 
-Assume the main web app lives in `apps/web/`:
-
-- Next.js source: `apps/web/src/`
-- Routes, layouts, pages, and route handlers: `apps/web/src/app/`
-- UI components: `apps/web/src/components/`
-- Feature code: `apps/web/src/features/`
-- React hooks: `apps/web/src/hooks/`
-- Server-only app code: `apps/web/src/server/`
-- Shared utilities: `apps/web/src/lib/`
-- Static assets: `apps/web/public/`
-- Docker files and service config: root `docker-compose*.yml` and `docker/`
-
-Use the `@/*` alias for imports inside `apps/web`. Do not mix root-level `src/` with `apps/web/src/`.
-
-For more structure and service details, see:
-
-- `docs/agents/PROJECT_STRUCTURE.md`
-- `docs/agents/BACKEND_SERVICES.md`
+* Source code lives in `apps/web/src/`.
+* Static assets live in `apps/web/public/`.
+* Use the `@/*` import alias for internal imports within `apps/web`.
+* Run app scripts from the repo root via `npm run <script>` (delegates to the `web` workspace), or `cd apps/web` and run them directly.
 
 ## Development Guidelines
 
-- Use Server Components by default.
-- Add `"use client"` only for browser APIs, state, effects, refs, or event handlers.
-- Keep database, Redis, auth, secrets, and privileged logic in server-only code.
-- Put backend-only app logic in `apps/web/src/server/`.
-- Use Route Handlers in `apps/web/src/app/api/` for HTTP endpoints.
-- Use Server Actions or Route Handlers for mutations.
-- Validate all untrusted input at server boundaries.
-- Treat wellness data as sensitive. Do not log private user health, mood, habit, journal, or profile data unless explicitly required and sanitized.
-- Never expose secrets, credentials, tokens, private environment variables, or service URLs to client code.
-- Use `next/image`, `next/font`, and `next/link` where appropriate.
-- Keep components focused, accessible, typed, and consistent with existing TypeScript and styling conventions.
-
-## Monorepo Guidelines
-
-- Prefer root scripts such as `npm run lint`, `npm run build`, and `npm run test`.
-- If a workspace-specific command is needed, run it through npm workspaces from the repo root.
-- Keep shared code in `packages/*` only when it is used by more than one app or service.
-- Do not create shared packages prematurely. App-specific code should stay in `apps/web/src/`.
-- Keep infrastructure config at the repo root or under `docker/`.
+* Use Server Components by default.
+* Add `"use client"` only when browser APIs, state, effects, refs, or event handlers are required.
+* Keep data fetching on the server whenever possible.
+* Use Server Actions or Route Handlers for mutations and API endpoints.
+* Validate all untrusted input.
+* Never expose secrets, credentials, tokens, or private environment variables to client code.
+* Use `next/image`, `next/font`, and `next/link` where appropriate.
+* Keep components focused, accessible, and colocated with related code.
+* Follow existing TypeScript, Tailwind CSS, formatting, and project conventions.
+* Consult `node_modules/next/dist/docs/` for version-specific Next.js behavior when needed.
 
 ## Repository Safety
 
-- Do not discard, reset, overwrite, or rewrite user changes unless explicitly requested.
-- Leave unrelated local changes untouched.
-- Keep changes focused and limited to the task.
-- Do not commit secrets, generated output, `node_modules/`, `.next/`, build artifacts, or `.env.local`.
-- Update `.env.example` when adding required environment variables.
+* Do not discard, reset, overwrite, or rewrite user changes unless explicitly requested.
+* If unrelated local changes are present, leave them untouched.
+* Keep changes focused and limited to the task.
+* Do not commit secrets, generated output, or unrelated changes.
 
 ## Validation
 
-Before completing a change, run the relevant checks from the repo root:
+Before completing a change, run:
 
 ```bash
 npm run lint
 npm run build
 ```
 
-When applicable, also run:
-
-```bash
-npm run test
-docker compose config
-```
-
-Do not consider a change complete until required checks pass, unless a failure is unrelated and clearly documented.
+Do not consider the change complete until both commands pass, unless a failure is unrelated to the current change and is clearly documented.
 
 ## Git Policy
 
-- Never commit or push directly to `main`.
-- Create a dedicated branch for each change when starting from `main`.
-- Use pull requests before merging into `main`.
-- Keep PRs focused, reviewable, and limited to one logical change.
+* Never commit or push directly to `main`.
+* Create a dedicated branch for each change when starting from `main`.
+* Use pull requests for review before merging into `main`.
+* Branch protection should block direct pushes to `main`.
 
 ## Commits
 
@@ -89,12 +58,61 @@ Use Conventional Commits:
 Examples:
 
 ```text
-feat(auth): add sign-in flow
-fix(api): validate wellness check-in input
-docs(setup): add docker compose instructions
-refactor(db)!: rename wellness entry fields
+feat(auth): add sign-in form
+fix(api): handle missing appointment data
+docs(readme): update setup instructions
+refactor(api)!: change appointment response format
 ```
 
-Allowed types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`.
+Allowed types:
 
-Use clear scopes such as `web`, `auth`, `api`, `db`, `redis`, `docker`, `ui`, `wellness`, or `deps`.
+```text
+feat      Add a feature
+fix       Fix a bug
+docs      Documentation-only changes
+style     Formatting changes that do not affect behavior
+refactor  Restructure code without changing behavior
+perf      Improve performance
+test      Add or update tests
+build     Change build system or dependencies
+ci        Change CI configuration or scripts
+chore     Maintenance not covered by another type
+revert    Revert a previous commit
+```
+
+Use a scope when it clarifies the affected area:
+
+```text
+feat(auth): add password reset flow
+fix(payments): handle failed webhook retries
+```
+
+Mark breaking changes with `!` and include a `BREAKING CHANGE:` footer when needed:
+
+```text
+refactor(api)!: change appointment response format
+
+BREAKING CHANGE: appointment responses now return `startsAt` instead of `start_time`.
+```
+
+Split logically independent changes into separate commits when practical. Each commit should be coherent, reviewable, and valid on its own.
+
+## Pull Requests
+
+PR titles should follow Conventional Commit style:
+
+```text
+<type>[optional scope]: <short summary>
+```
+
+Examples:
+
+```text
+feat(auth): add password reset flow
+fix(payments): handle failed webhook retries
+docs(api): update endpoint examples
+test(checkout): add integration coverage
+chore(deps): update package dependencies
+```
+
+PR titles should be concise, specific, and focused. Use lowercase for the type and scope, prefer imperative mood, and avoid vague titles such as `updates`, `bug fixes`, `misc changes`, or `work in progress`.
