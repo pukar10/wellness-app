@@ -182,3 +182,14 @@ jobs:
       image_name: wellness-app
       context: .
       dockerfile: ./docker/Dockerfile
+
+  trivy:
+    name: Trivy scan
+    needs:
+      - build-publish-nextjs
+    uses: pukar10/shared-workflows/.github/workflows/trivy.yaml@main
+    with:
+      image: ${{ needs.build-publish.outputs.image }}
+      severity: CRITICAL,HIGH
+      ignore-unfixed: true
+      fail-on-findings: false
