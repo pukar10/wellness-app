@@ -33,8 +33,8 @@ WELLNESS-APP/
 │  ├─ postgres/
 │  └─ redis/
 │
-├─ docker-compose.yml
-├─ docker-compose.dev.yml
+├─ docker-compose.yaml
+├─ docker-compose-dev.yaml
 ├─ .env.example
 ├─ package.json
 ├─ package-lock.json
