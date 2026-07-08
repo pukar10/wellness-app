@@ -17,6 +17,8 @@ Use this skill when the user asks to start, run, launch, or check the local deve
    npm run dev
    ```
 
+   This delegates to the `web` workspace in `apps/web/`.
+
 4. Keep the command running in a long-lived shell session.
 5. Watch the output for the local URL, usually `http://localhost:3000`.
 6. If port `3000` is already in use and Next.js selects another port, report the actual URL from the server output.

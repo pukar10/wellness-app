@@ -2,11 +2,12 @@
 
 ## Project
 
-This is a Next.js App Router project using TypeScript, React, and Tailwind CSS.
+This is an npm workspaces monorepo. The Next.js App Router project lives in `apps/web/`.
 
-* Source code lives in `src/`.
-* Static assets live in `public/`.
-* Use the `@/*` import alias for internal imports.
+* Source code lives in `apps/web/src/`.
+* Static assets live in `apps/web/public/`.
+* Use the `@/*` import alias for internal imports within `apps/web`.
+* Run app scripts from the repo root via `npm run <script>` (delegates to the `web` workspace), or `cd apps/web` and run them directly.
 
 ## Development Guidelines
 
